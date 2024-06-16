@@ -10,10 +10,8 @@ import warnings
 os.environ["HYDRA_FULL_ERROR"] = "1"
 warnings.filterwarnings("ignore")
 
-import joblib
-
 import numpy as np
-import pandas as pd
+import polars as pl
 
 import hydra
 from omegaconf import DictConfig
@@ -23,13 +21,12 @@ from omegaconf import DictConfig
     config_path="configs/",
     config_name="voting.yaml",
 )
-def softly_vote_logits(
+def softly_vote_probs(
     config: DictConfig,
 ) -> None:
     connected_dir = config.connected_dir
-    voted_logit = config.voted_logit
     submission_file = config.submission_file
-    target_column_name = config.target_column_name
+    result_column_name = config.result_column_name
     voted_file = config.voted_file
     votings = config.votings
 
@@ -37,34 +34,24 @@ def softly_vote_logits(
     if not np.isclose(sum(weights), 1):
         raise ValueError(f"summation of weights({sum(weights)}) is not equal to 1")
 
-    weighted_logits = None
-    for logit_file, weight in votings.items():
+    weighted_probs = None
+    for prob_file, weight in votings.items():
         try:
-            logit = np.load(f"{connected_dir}/logits/{logit_file}.npy")
+            prob_df = pl.read_csv(f"{connected_dir}/submissions/{prob_file}.csv")
         except:
-            raise FileNotFoundError(f"logit file {logit_file} does not exist")
-        if weighted_logits is None:
-            weighted_logits = logit * weight
+            raise FileNotFoundError(f"prob file {prob_file} does not exist")
+        prob = prob_df[result_column_name].to_numpy()
+        if weighted_probs is None:
+            weighted_probs = prob * weight
         else:
-            weighted_logits += logit * weight
+            weighted_probs += prob * weight
 
-    ensemble_predictions = np.argmax(
-        weighted_logits,
-        axis=-1,
-    )
-    submission_df = pd.read_csv(submission_file)
-    np.save(
-        voted_logit,
-        weighted_logits,
-    )
-    label_mapping = joblib.load(f"{connected_dir}/data/label_mapping.pkl")
-    str_predictions = np.vectorize(label_mapping.get)(ensemble_predictions)
-    submission_df[target_column_name] = str_predictions
-    submission_df.to_csv(
+    submission_df = pl.read_csv(submission_file)
+    submission_df[result_column_name] = weighted_probs
+    submission_df.write_csv(
         voted_file,
-        index=False,
     )
 
 
 if __name__ == "__main__":
-    softly_vote_logits()
+    softly_vote_probs()
