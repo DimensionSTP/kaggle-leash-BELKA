@@ -1,8 +1,6 @@
 import os
-import joblib
 
-import numpy as np
-import pandas as pd
+import polars as pl
 import torch
 
 from hydra.utils import instantiate
@@ -258,13 +256,13 @@ def predict(
             config.strategy == "deepspeed_stage_3"
             or config.strategy == "deepspeed_stage_3_offload"
         ):
-            logits = trainer.predict(
+            probs = trainer.predict(
                 model=architecture,
                 dataloaders=predict_loader,
                 ckpt_path=f"{config.ckpt_path}/model.pt",
             )
         else:
-            logits = trainer.predict(
+            probs = trainer.predict(
                 model=architecture,
                 dataloaders=predict_loader,
                 ckpt_path=config.ckpt_path,
@@ -282,53 +280,62 @@ def predict(
         )
         raise e
 
-    if len(logits[0].shape) == 3:
-        logits = [
+    if len(probs[0].shape) == 3:
+        probs = [
             torch.cat(
-                logit.split(
+                prob.split(
                     1,
                     dim=0,
                 ),
                 dim=1,
             ).view(
                 -1,
-                logits[0].shape[-1],
+                probs[0].shape[-1],
             )
-            for logit in logits
+            for prob in probs
         ]
-    all_logits = torch.cat(
-        logits,
+    all_probs = torch.cat(
+        probs,
         dim=0,
     )
-    sorted_logits_with_indices = all_logits[all_logits[:, -1].argsort()]
-    pred_df = pd.read_csv(
-        f"{config.connected_dir}/data/{config.submission_file_name}.csv"
+    sorted_probs_with_indices = all_probs[all_probs[:, -1].argsort()]
+    pred_df = pl.read_parquet(
+        f"{config.connected_dir}/data/{config.submission_file_name}.parquet"
     )
-    sorted_logits = sorted_logits_with_indices[: len(pred_df), :-1].numpy()
-    all_predictions = np.argmax(
-        sorted_logits,
-        axis=-1,
-    )
-    label_mapping = joblib.load(f"{config.connected_dir}/data/label_mapping.pkl")
-    all_str_predictions = np.vectorize(label_mapping.get)(all_predictions)
-    if not os.path.exists(f"{config.connected_dir}/logits"):
-        os.makedirs(
-            f"{config.connected_dir}/logits",
-            exist_ok=True,
+    all_predictions = sorted_probs_with_indices[: len(pred_df), :-1].numpy()
+    target_column_name_dfs = []
+    for i, target_column_name in enumerate(config.target_column_names):
+        target_column_name_dfs.append(
+            pred_df.with_columns(
+                pl.lit(target_column_name).alias(config.label_type_column_name),
+                pl.lit(all_predictions[:, i]).alias(config.result_column_name),
+            )
         )
-    np.save(
-        f"{config.connected_dir}/logits/{config.logit_name}.npy",
-        sorted_logits,
+    target_column_name_df = pl.concat(target_column_name_dfs)
+    pred_df = (
+        pred_df.join(
+            target_column_name_df,
+            on=[
+                config.data_column_name,
+                config.label_type_column_name,
+            ],
+            how="left",
+        )
+        .select(
+            [
+                config.order_column_name,
+                config.result_column_name,
+            ]
+        )
+        .sort(config.order_column_name)
     )
-    pred_df[config.target_column_name] = all_str_predictions
     if not os.path.exists(f"{config.connected_dir}/submissions"):
         os.makedirs(
             f"{config.connected_dir}/submissions",
             exist_ok=True,
         )
-    pred_df.to_csv(
+    pred_df.write_csv(
         f"{config.connected_dir}/submissions/{config.submission_name}.csv",
-        index=False,
     )
 
 
