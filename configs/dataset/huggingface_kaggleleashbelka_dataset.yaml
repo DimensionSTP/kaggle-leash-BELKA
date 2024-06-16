@@ -1,13 +1,11 @@
-_target_: src.datasets.huggingface_dataset.DACONBirdImageDataset
+_target_: src.datasets.huggingface_dataset.KaggleLeashBELKADataset
 data_path: ${connected_dir}/data
 split: ${split.train}
 split_ratio: ${split_ratio}
 seed: ${seed}
-target_column_name: ${target_column_name}
+data_column_name: ${data_column_name}
+target_column_names: ${target_column_names}
 num_devices: ${devices}
 batch_size: ${batch_size}
 pretrained_model_name: ${pretrained_model_name}
-image_size: 256
-augmentation_probability: 0.001
-augmentations:
-  - noise
+data_max_length: ${data_max_length}
