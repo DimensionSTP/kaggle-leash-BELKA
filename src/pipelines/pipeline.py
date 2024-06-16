@@ -319,7 +319,7 @@ def predict(
                 config.data_column_name,
                 config.label_type_column_name,
             ],
-            how="left",
+            how="inner",
         )
         .select(
             [
@@ -329,6 +329,7 @@ def predict(
         )
         .sort(config.order_column_name)
     )
+    pred_df = pred_df.unique()
     if not os.path.exists(f"{config.connected_dir}/submissions"):
         os.makedirs(
             f"{config.connected_dir}/submissions",
