@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - dataset: huggingface_daconbirdimage_dataset
+  - dataset: huggingface_kaggleleashbelka_dataset
   - architecture: huggingface_architecture
   - tuner: huggingface_tuner
   - logger: wandb
@@ -8,13 +8,13 @@ defaults:
   - callbacks: callbacks
   - trainer: trainer
 
-package_name: dacon-bird
+package_name: kaggle-leash-BELKA
 project_dir: ${oc.env:PROJECT_DIR}/${package_name}
 connected_dir: ${oc.env:CONNECTED_DIR}/${package_name}
 
 seed: 2024
 
-num_labels: 25
+num_labels: 3
 
 split:
   train: train
@@ -22,13 +22,20 @@ split:
   test: test
   predict: predict
 
-batch_size: 24
+batch_size: 256
 
 split_ratio: 0.1
-target_column_name: label
-upload_user: microsoft
-model_type: swinv2-large-patch4-window12to16-192to256-22kto1k-ft
+data_column_name: molecule_smiles
+target_column_names:
+  - BRD4
+  - HSA
+  - sEH
+upload_user: DeepChem
+model_type: ChemBERTa-10M-MTR
 pretrained_model_name: ${upload_user}/${model_type}
+data_max_length: 200
+
+dropout_ratio: 0.1
 
 lr: 0.0001
 period: 2
@@ -50,7 +57,7 @@ gradient_clip_algorithm: norm
 epoch: 100
 
 model_name: HuggingFace
-dataset_name: DACONBirdImage
+dataset_name: KaggleLeashBELKA
 mode: train
 
 is_tuned: tuned
@@ -64,8 +71,10 @@ save_detail: ${upload_user}_${model_type}-precision=${precision}-${total_batch_s
 resumed_step: 0
 ckpt_path: ${callbacks.model_checkpoint.dirpath}/epoch=${epoch}.ckpt
 
-submission_file_name: sample_submission
-logit_name: ${save_detail}-epoch=${epoch}
+submission_file_name: test
+label_type_column_name: protein_name
+result_column_name: binds
+order_column_name: id
 submission_name: ${save_detail}-epoch=${epoch}
 
 run_name: ${project_name}
