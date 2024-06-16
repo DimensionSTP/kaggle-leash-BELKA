@@ -53,7 +53,7 @@ class KaggleLeashBELKADataset(Dataset):
         encoded = self.encode_molecule(self.datas[idx])
         encoded["labels"] = torch.tensor(
             [self.labels[idx]],
-            dtype=torch.long,
+            dtype=torch.float,
         ).squeeze(0)
         return {
             "encoded": encoded,
