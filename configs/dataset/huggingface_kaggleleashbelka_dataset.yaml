@@ -1,6 +1,7 @@
 _target_: src.datasets.huggingface_dataset.KaggleLeashBELKADataset
 data_path: ${connected_dir}/data
 split: ${split.train}
+num_samples: ${num_samples}
 split_ratio: ${split_ratio}
 seed: ${seed}
 data_column_name: ${data_column_name}
