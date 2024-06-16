@@ -31,18 +31,19 @@ class HuggingFaceModel(nn.Module):
         self,
         encoded: Dict[str, torch.Tensor],
     ) -> Dict[str, torch.Tensor]:
-        model_output = self.model(**encoded)
-        logits = self.classifier(
+        label = encoded["labels"]
+        del encoded["labels"]
+        output = self.model(**encoded)
+        logit = self.classifier(
             self.dropout(
-                model_output.pooler_output,
+                output.pooler_output,
             )
         )
         loss = F.binary_cross_entropy_with_logits(
-            logits,
-            encoded["labels"],
+            logit,
+            label,
         )
-        output = {
-            "logits": logits,
+        return {
+            "logit": logit,
             "loss": loss,
         }
-        return output
