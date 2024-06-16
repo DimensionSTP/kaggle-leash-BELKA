@@ -1,5 +1,4 @@
 from typing import Dict, Any, List
-import joblib
 
 import numpy as np
 import polars as pl
@@ -17,6 +16,7 @@ class KaggleLeashBELKADataset(Dataset):
         self,
         data_path: str,
         split: str,
+        num_samples: int,
         split_ratio: float,
         seed: int,
         data_column_name: str,
@@ -28,6 +28,7 @@ class KaggleLeashBELKADataset(Dataset):
     ) -> None:
         self.data_path = data_path
         self.split = split
+        self.num_samples = num_samples
         self.split_ratio = split_ratio
         self.seed = seed
         self.data_column_name = data_column_name
@@ -62,7 +63,9 @@ class KaggleLeashBELKADataset(Dataset):
 
     def get_dataset(self) -> Dict[str, List[Any]]:
         if self.split in ["train", "val"]:
-            parquet_path = f"{self.data_path}/preprocessed_train_2_000_000.parquet"
+            parquet_path = (
+                f"{self.data_path}/preprocessed_train_{self.num_samples}.parquet"
+            )
             data = pl.read_parquet(parquet_path).to_pandas()
             train_data, val_data = train_test_split(
                 data,
