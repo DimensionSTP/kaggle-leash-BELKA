@@ -8,5 +8,6 @@ for split in $splits
 do
     python preprocess_dataset.py \
         num_samples=$num_samples \
-        num_rows=$num_rows
+        num_rows=$num_rows \
+        split=$split
 done

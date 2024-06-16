@@ -6,7 +6,7 @@ upload_user="DeepChem"
 model_type="ChemBERTa-10M-MTR"
 precision=32
 batch_size=1024
-epochs="9 10"
+epochs="11 12"
 
 for epoch in $epochs
 do
@@ -16,5 +16,6 @@ do
         upload_user=$upload_user \
         model_type=$model_type \
         precision=$precision \
-        batch_size=$batch_size
+        batch_size=$batch_size \
+        epoch=$epoch
 done
