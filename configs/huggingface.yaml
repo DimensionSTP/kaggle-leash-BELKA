@@ -22,7 +22,7 @@ split:
   test: test
   predict: predict
 
-batch_size: 256
+batch_size: 1024
 
 split_ratio: 0.1
 data_column_name: molecule_smiles
@@ -33,7 +33,7 @@ target_column_names:
 upload_user: DeepChem
 model_type: ChemBERTa-10M-MTR
 pretrained_model_name: ${upload_user}/${model_type}
-data_max_length: 200
+data_max_length: 120
 
 dropout_ratio: 0.1
 
