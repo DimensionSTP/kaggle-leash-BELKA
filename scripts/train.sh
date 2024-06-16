@@ -2,13 +2,12 @@
 
 is_tuned="untuned"
 strategy="ddp"
-upload_user="microsoft"
-model_type="swinv2-large-patch4-window12to16-192to256-22kto1k-ft"
+upload_user="DeepChem"
+model_type="ChemBERTa-10M-MTR"
 precision=32
-batch_size=24
+batch_size=1024
 
 python main.py mode=train \
-    modality=$modality \
     is_tuned=$is_tuned \
     strategy=$strategy \
     upload_user=$upload_user \
