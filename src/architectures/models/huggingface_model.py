@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from transformers import AutoModel, AutoConfig
+from transformers import AutoModel
 
 
 class HuggingFaceModel(nn.Module):
@@ -22,13 +22,9 @@ class HuggingFaceModel(nn.Module):
         self.dropout = nn.Dropout(
             p=dropout_ratio,
         )
-        self.model_config = AutoConfig.from_pretrained(
-            pretrained_model_name,
-            num_labels=num_labels,
-        )
         self.classifier = nn.Linear(
-            self.model_config.hidden_size,
-            self.model_config.num_labels,
+            self.model.config.hidden_size,
+            num_labels,
         )
 
     def forward(
