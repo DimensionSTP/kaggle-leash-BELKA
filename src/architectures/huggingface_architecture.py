@@ -2,6 +2,7 @@ from typing import Dict, Any
 
 import torch
 from torch import optim, nn
+from torch.nn import functional as F
 from torchmetrics import MetricCollection, F1Score, Accuracy
 
 from lightning.pytorch import LightningModule
@@ -32,12 +33,12 @@ class HuggingFaceArchitecture(LightningModule):
         metrics = MetricCollection(
             [
                 F1Score(
-                    task="multiclass",
+                    task="multilabel",
                     num_classes=num_labels,
                     average=average,
                 ),
                 Accuracy(
-                    task="multiclass",
+                    task="multilabel",
                     num_classes=num_labels,
                     average=average,
                 ),
@@ -74,10 +75,7 @@ class HuggingFaceArchitecture(LightningModule):
             mode=mode,
         )
         logit = output.logits
-        pred = torch.argmax(
-            logit,
-            dim=-1,
-        )
+        pred = torch.round(F.sigmoid(logit))
         loss = output.loss
         return {
             "loss": loss,
@@ -241,11 +239,12 @@ class HuggingFaceArchitecture(LightningModule):
             mode="eval",
         )
         logit = output["logit"]
+        prob = F.sigmoid(logit)
         index = output["index"]
         index = index.unsqueeze(-1).float()
         output = torch.cat(
             (
-                logit,
+                prob,
                 index,
             ),
             dim=-1,
