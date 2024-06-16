@@ -1,7 +1,13 @@
 _target_: src.tuners.huggingface_tuner.HuggingFaceTuner
 hparams:
   pretrained_model_name:
-    - microsoft/swinv2-large-patch4-window12to16-192to256-22kto1k-ft
+    - DeepChem/ChemBERTa-5M-MTR
+    - DeepChem/ChemBERTa-10M-MTR
+    - DeepChem/ChemBERTa-77M-MTR
+  dropout_ratio:
+    low: 0.05
+    high: 0.5
+    log: False
   lr:
     low: 0.000005
     high: 0.00005
