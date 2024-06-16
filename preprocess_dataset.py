@@ -16,7 +16,7 @@ def preprocess_dataset(
 ) -> None:
     if config.split == "train":
         df = pl.read_parquet(
-            f"{config.connected_dir}/train.parquet",
+            f"{config.connected_dir}/data/{config.split}.parquet",
             columns=[
                 config.data_column_name,
                 config.label_type_column_name,
@@ -26,7 +26,7 @@ def preprocess_dataset(
         )
     elif config.split == "test":
         df = pl.read_parquet(
-            f"{config.connected_dir}/train.parquet",
+            f"{config.connected_dir}/data/{config.split}.parquet",
             columns=[
                 config.data_column_name,
             ],
@@ -92,10 +92,12 @@ def preprocess_dataset(
 
     if config.split == "train":
         df.write_parquet(
-            f"{config.connected_dir}/preprocessed_train_{config.num_samples}.parquet"
+            f"{config.connected_dir}/data/preprocessed_{config.split}_{config.num_samples}.parquet"
         )
     if config.split == "test":
-        df.write_parquet(f"{config.connected_dir}/preprocessed_test.parquet")
+        df.write_parquet(
+            f"{config.connected_dir}/data/preprocessed_{config.split}.parquet"
+        )
 
 
 if __name__ == "__main__":
