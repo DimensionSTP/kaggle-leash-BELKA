@@ -8,11 +8,10 @@ package_name: dacon-bird
 connected_dir: ${oc.env:CONNECTED_DIR}/${package_name}
 voted_name: soft_voting
 
-voted_logit: ${connected_dir}/logits/${voted_name}.npy
 submission_file: ${connected_dir}/data/sample_submission.csv
-target_column_name: label
+result_column_name: binds
 voted_file: ${connected_dir}/submissions/${voted_name}.csv
 
 votings:
-  logit1: 0.5
-  logit2: 0.5
+  prob1: 0.5
+  prob2: 0.5
