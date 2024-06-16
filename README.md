@@ -1,16 +1,16 @@
-# Basic DL pipeline for CV competition
+# Pipeline for Kaggle competition
 
-## For DACON CV competition
+## For Kaggle leash-BELKA competition
 
 ### Dataset
-DACON CV competition dataset(bird image classification)
+KAGGLE leash-BELKA competition dataset(protein binds dataset)
 
 ### Quick setup
 
 ```bash
 # clone project
-git clone https://github.com/DimensionSTP/dacon-bird.git
-cd dacon-bird
+git clone https://github.com/DimensionSTP/kaggle-leash-BELKA.git
+cd kaggle-leash-BELKA
 
 # [OPTIONAL] create conda environment
 conda create -n myenv python=3.8
