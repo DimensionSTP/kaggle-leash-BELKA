@@ -34,12 +34,12 @@ class HuggingFaceArchitecture(LightningModule):
             [
                 F1Score(
                     task="multilabel",
-                    num_classes=num_labels,
+                    num_labels=num_labels,
                     average=average,
                 ),
                 Accuracy(
                     task="multilabel",
-                    num_classes=num_labels,
+                    num_labels=num_labels,
                     average=average,
                 ),
             ]
@@ -74,9 +74,9 @@ class HuggingFaceArchitecture(LightningModule):
             encoded=encoded,
             mode=mode,
         )
-        logit = output.logits
+        logit = output["logit"]
         pred = torch.round(F.sigmoid(logit))
-        loss = output.loss
+        loss = output["loss"]
         return {
             "loss": loss,
             "logit": logit,
