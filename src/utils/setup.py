@@ -1,4 +1,4 @@
-from typing import Dict, Any, List
+from typing import Any, List
 
 from omegaconf import DictConfig
 from hydra.utils import instantiate
