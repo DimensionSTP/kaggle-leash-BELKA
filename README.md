@@ -3,7 +3,7 @@
 ## For Kaggle leash-BELKA competition
 
 ### Dataset
-KAGGLE leash-BELKA competition dataset(protein binds dataset)
+Kaggle leash-BELKA competition dataset(protein binds dataset)
 
 ### Quick setup
 
