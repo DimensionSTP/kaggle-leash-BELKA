@@ -58,7 +58,7 @@ gradient_clip_algorithm: norm
 epoch: 100
 
 model_name: HuggingFace
-dataset_name: KaggleLeashBELKA
+dataset_name: KaggleLeashBELKA_num_samples=${num_samples}
 mode: train
 
 is_tuned: tuned
@@ -77,7 +77,7 @@ label_type_column_name: protein_name
 result_column_name: binds
 order_column_name: id
 num_rows: 180000000
-submission_name: num_samples=${num_samples}-${save_detail}-epoch=${epoch}
+submission_name: ${dataset_name}-${save_detail}-epoch=${epoch}
 
 run_name: ${project_name}
 work_dir: ${hydra:runtime.cwd}
