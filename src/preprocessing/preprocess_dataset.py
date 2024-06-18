@@ -8,7 +8,7 @@ from omegaconf import DictConfig
 
 
 @hydra.main(
-    config_path="configs/",
+    config_path="../../configs/",
     config_name="huggingface.yaml",
 )
 def preprocess_dataset(
