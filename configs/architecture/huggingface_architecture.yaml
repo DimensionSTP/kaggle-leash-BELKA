@@ -3,7 +3,6 @@ _target_: src.architectures.huggingface_architecture.HuggingFaceArchitecture
 model:
   _target_: src.architectures.models.huggingface_model.HuggingFaceModel
   pretrained_model_name: ${pretrained_model_name}
-  dropout_ratio: ${dropout_ratio}
   num_labels: ${num_labels}
 
 num_labels: ${num_labels}
