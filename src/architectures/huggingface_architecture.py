@@ -74,9 +74,12 @@ class HuggingFaceArchitecture(LightningModule):
             encoded=encoded,
             mode=mode,
         )
-        logit = output["logit"]
+        logit = output.logits
         pred = torch.round(F.sigmoid(logit))
-        loss = output["loss"]
+        loss = F.binary_cross_entropy_with_logits(
+            logit,
+            label,
+        )
         return {
             "loss": loss,
             "logit": logit,
