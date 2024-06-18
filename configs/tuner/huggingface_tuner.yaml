@@ -4,10 +4,6 @@ hparams:
     - DeepChem/ChemBERTa-5M-MTR
     - DeepChem/ChemBERTa-10M-MTR
     - DeepChem/ChemBERTa-77M-MTR
-  dropout_ratio:
-    low: 0.05
-    high: 0.5
-    log: False
   lr:
     low: 0.000005
     high: 0.00005
