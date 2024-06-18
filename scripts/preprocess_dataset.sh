@@ -1,12 +1,13 @@
 #!/bin/bash
 
-num_samples=2000000
+path="src/preprocessing"
+num_samples=30000000
 num_rows=180000000
 splits="train test"
 
 for split in $splits
 do
-    python preprocess_dataset.py \
+    python $path/preprocess_dataset.py \
         num_samples=$num_samples \
         num_rows=$num_rows \
         split=$split
