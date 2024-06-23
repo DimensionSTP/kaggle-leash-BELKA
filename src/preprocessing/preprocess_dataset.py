@@ -1,5 +1,3 @@
-from typing import List
-
 import polars as pl
 from rdkit import Chem
 
