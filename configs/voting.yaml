@@ -4,7 +4,7 @@ defaults:
 run_name: soft_voting
 work_dir: ${hydra:runtime.cwd}
 
-package_name: dacon-bird
+package_name: kaggle-leash-BELKA
 connected_dir: ${oc.env:CONNECTED_DIR}/${package_name}
 voted_name: soft_voting
 
