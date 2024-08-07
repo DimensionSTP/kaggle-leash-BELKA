@@ -3,7 +3,7 @@
 is_tuned="untuned"
 strategy="ddp"
 upload_user="DeepChem"
-model_type="ChemBERTa-10M-MTR"
+model_type="ChemBERTa-77M-MLM"
 precision=32
 batch_size=1024
 
