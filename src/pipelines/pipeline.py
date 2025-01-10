@@ -327,11 +327,10 @@ def predict(
         .sort(config.order_column_name)
     )
     pred_df = pred_df.unique()
-    if not os.path.exists(f"{config.connected_dir}/submissions"):
-        os.makedirs(
-            f"{config.connected_dir}/submissions",
-            exist_ok=True,
-        )
+    os.makedirs(
+        f"{config.connected_dir}/submissions",
+        exist_ok=True,
+    )
     pred_df.write_csv(
         f"{config.connected_dir}/submissions/{config.submission_name}.csv",
     )
